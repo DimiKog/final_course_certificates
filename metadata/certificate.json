@@ -1,0 +1,28 @@
+{
+    "name": "Blockchain & Web3 – Course Participation Certificate",
+    "description": "On-chain proof of participation in a university-level course on Blockchain and Web3 technologies.",
+    "image": "ipfs://bafkreifc7xa37qtrbuk2hrh7fspfrm6pgqpxeumrmg5u4mu45xe23hltre",
+    "external_url": "https://eclass.uniwa.gr/courses/MSC-ACS107/",
+    "attributes": [
+        {
+            "trait_type": "Course Track",
+            "value": "Blockchain & Web3"
+        },
+        {
+            "trait_type": "Institution",
+            "value": "University of West Attica"
+        },
+        {
+            "trait_type": "Academic Year",
+            "value": "2025–2026"
+        },
+        {
+            "trait_type": "Certificate Type",
+            "value": "Proof of Participation"
+        },
+        {
+            "trait_type": "Network",
+            "value": "Besu EduNet (Educational)"
+        }
+    ]
+}

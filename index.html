@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="el">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Course Certificate NFT – Mint</title>
+
+    <!-- Ethers v5 -->
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            background: radial-gradient(circle at top, #0f172a, #020617);
+            color: #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .card {
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid #1e293b;
+            border-radius: 18px;
+            padding: 32px;
+            max-width: 420px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #f8fafc;
+        }
+
+        p.subtitle {
+            font-size: 0.95rem;
+            color: #94a3b8;
+            margin-bottom: 1.5rem;
+        }
+
+        .certificate {
+            border: 1px dashed #334155;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 1.5rem;
+            background: #020617;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            background: linear-gradient(135deg, #38bdf8, #6366f1);
+            color: #020617;
+            transition: transform 0.15s ease, opacity 0.15s ease;
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+            opacity: 0.95;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        #status {
+            margin-top: 1.25rem;
+            font-size: 0.9rem;
+            color: #cbd5f5;
+            min-height: 1.2em;
+            white-space: pre-line;
+        }
+
+        footer {
+            margin-top: 1.5rem;
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="card">
+        <h1>🎓 Course Certificate NFT</h1>
+        <p class="subtitle">
+            Proof of Participation – Blockchain & Web3
+        </p>
+
+        <div class="certificate">
+            Αυτό το NFT αποτελεί<br />
+            <strong>on-chain απόδειξη συμμετοχής</strong><br />
+            στο πανεπιστημιακό μάθημα.
+        </div>
+
+        <button id="mintBtn">Σύνδεση & Mint Certificate</button>
+
+        <div id="status"></div>
+
+        <footer>
+            Besu EduNet · ERC-721 · Verified Contract
+        </footer>
+    </div>
+
+    <script>
+        const CONTRACT_ADDRESS = "0x0300C86Fcdb068e91855166142e6f4138e7BFDCC";
+
+        const ABI = [
+            "function mint() external",
+            "function hasMinted(address) view returns (bool)"
+        ];
+
+        const mintBtn = document.getElementById("mintBtn");
+        const statusEl = document.getElementById("status");
+
+        async function mintCertificate() {
+            try {
+                if (!window.ethereum) {
+                    statusEl.textContent = "❌ Δεν βρέθηκε MetaMask.";
+                    return;
+                }
+
+                const provider = new ethers.providers.Web3Provider(window.ethereum);
+                await provider.send("eth_requestAccounts", []);
+                const signer = provider.getSigner();
+                const userAddress = await signer.getAddress();
+
+                const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+
+                statusEl.textContent = "🔍 Έλεγχος αν έχεις ήδη certificate…";
+                const alreadyMinted = await contract.hasMinted(userAddress);
+
+                if (alreadyMinted) {
+                    statusEl.textContent = "ℹ️ Έχεις ήδη λάβει το Certificate NFT.";
+                    return;
+                }
+
+                statusEl.textContent = "✍️ Υπογραφή συναλλαγής…";
+                mintBtn.disabled = true;
+
+                const tx = await contract.mint();
+                statusEl.textContent =
+                    "⏳ Η συναλλαγή στάλθηκε.\n\nTx Hash:\n" + tx.hash;
+
+                await tx.wait();
+
+                statusEl.textContent =
+                    "✅ Το Certificate NFT δημιουργήθηκε επιτυχώς!\n\nΜπορείς να το δεις στο Block Explorer ή στο MetaMask.";
+            } catch (err) {
+                console.error(err);
+                statusEl.textContent = "❌ Σφάλμα: " + (err.message || err);
+            } finally {
+                mintBtn.disabled = false;
+            }
+        }
+
+        mintBtn.addEventListener("click", mintCertificate);
+    </script>
+
+</body>
+
+</html>
