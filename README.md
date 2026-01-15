@@ -1,3 +1,8 @@
+🔗 **Σελίδα Mint Certificate NFT**  
+https://dimikog.github.io/final_course_certificates/
+
+---
+
 # 🎓 Certificate NFT Μαθήματος Blockchain & Web3
 
 Αυτό το repository συνοδεύει το πανεπιστημιακό μάθημα
